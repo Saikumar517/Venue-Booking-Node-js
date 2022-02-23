@@ -1,24 +1,22 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const connectDB = require("./config/DB");
-const userRoute = require("./routes/userLogin");
-const venues = require("./routes/venuesRoute");
-const bookingRoute = require("./routes/bookingRoute");
+const dbConncetion = require("./config/DB");
+const events = require("./routes/venues");
+const login = require("./routes/login");
+const booking = require("./routes/BookingVenue");
+dotenv.config({ path: "./config/config.env" });
 
+dbConncetion(); //calling the DB method
 const app = express();
 
-dotenv.config({ path: "./config/config.env" }); // adding .env files
+app.use(express.json()); //middleware
 
-//calling the DB()
-connectDB();
+app.use("/user", login);
+app.use("/booking", booking);
+app.use("/venue", events);
 
-app.use(express.json()); // body-parser
+const PORT = process.env.PORT || 5000;
 
-app.use("/user", userRoute);
-app.use("/venue", venues); // adding the routes
-app.use("/booking", bookingRoute);
-const PORT = process.env.PORT || 5001; // setting the PORT
-
-app.listen(process.env.PORT, () => {
-  console.log(`Server is Running on PORT ${PORT} `);
+app.listen(PORT, () => {
+  console.log("Server is running on " + PORT);
 });
